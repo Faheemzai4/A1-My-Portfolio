@@ -23,12 +23,12 @@ export default function Dashboard() {
 
         {/* Image Section */}
         <Reveal animation="animate-fade-in-left">
-          <section className="flex-shrink-0 w-full max-w-[220px] sm:max-w-[300px] md:max-w-[400px] select-none">
+          <section className="flex-shrink-0 w-full min-w-[220px] sm:min-w-[300px] md:min-w-[350px] lg:min-w-[400px] select-none">
             <Image
               src="/my-picture/myProfile.png"
               alt="Dashboard Visual"
-              width={500}
-              height={500}
+              width={300}
+              height={300}
               className="rounded-lg object-cover w-full h-auto"
               priority
             />

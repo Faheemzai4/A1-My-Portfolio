@@ -11,31 +11,28 @@ export default function Contact() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
+
+    // reset messages
     setSuccessMsg("");
     setErrorMsg("");
+    setLoading(true);
 
     const formData = new FormData(e.currentTarget);
 
     try {
       const res = await sendContactEmail(formData);
-
       if (res.success) {
         setSuccessMsg("✅ Thank you! Your message has been sent.");
-        setErrorMsg("");              // Make sure error is cleared
-        e.currentTarget.reset();      // Clear the form fields
+        e.currentTarget.reset();
       } else {
         setErrorMsg(`❌ ${res.error}`);
-        setSuccessMsg("");            // Make sure success is cleared
       }
     } catch {
       setErrorMsg("❌ Failed to send message.");
-      setSuccessMsg("");              // Make sure success is cleared
     } finally {
       setLoading(false);
     }
   }
-
 
   return (
     <section className="relative py-12 flex items-center justify-center bg-gradient-to-t from-[#e5e7eb] to-[#9ca3af]">
@@ -43,7 +40,7 @@ export default function Contact() {
 
       <Reveal animation="animate-fade-in-up">
         {/* Updated max width to make contact card bigger */}
-        <div className="w-full max-w-4xl sm:max-w-2xl bg-white rounded-2xl shadow-xl p-12 sm:p-8">
+        <div className="w-full sm:w-2xl md:min-w-3xl bg-white rounded-2xl shadow-xl p-12 sm:p-8">
           <Reveal animation="animate-fade-in-up delay-100">
             <h1 className="text-4xl sm:text-3xl font-bold text-center mb-6 text-gray-900">
               Contact Me
@@ -114,18 +111,13 @@ export default function Contact() {
           {/* Success / Error messages */}
           {successMsg ? (
             <Reveal animation="animate-fade-in-up delay-600">
-              <p className="mt-4 text-green-600 font-semibold text-center text-sm sm:text-xs">
-                {successMsg}
-              </p>
+              <p className="mt-4 text-green-600 font-semibold text-center text-sm sm:text-xs">{successMsg}</p>
             </Reveal>
           ) : errorMsg ? (
             <Reveal animation="animate-fade-in-up delay-600">
-              <p className="mt-4 text-red-600 font-semibold text-center text-sm sm:text-xs">
-                {errorMsg}
-              </p>
+              <p className="mt-4 text-red-600 font-semibold text-center text-sm sm:text-xs">{errorMsg}</p>
             </Reveal>
           ) : null}
-
         </div>
       </Reveal>
     </section>
