@@ -47,20 +47,24 @@ export async function sendContactEmail(
     userData.lastSent = now;
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT),
+      secure: true, // for 465
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
     });
 
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: `"Portfolio Contact" <${process.env.SMTP_USER}>`,
       replyTo: email,
-      to: process.env.RECEIVER_EMAIL,
+      to: process.env.RECEIVER_EMAIL, // send to your receiving email
       subject: `📩 New Contact Form Message from ${name}`,
       text: `From: ${name} <${email}>\n\n${message}`,
     });
+
+
 
     console.log("✅ Email sent to:", process.env.RECEIVER_EMAIL);
 
