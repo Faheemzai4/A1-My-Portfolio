@@ -42,8 +42,9 @@ export async function sendContactEmail(formData: FormData) {
     });
 
     return { success: true, error: "" };
-  } catch (err: any) {
-    console.error("Email error:", err?.message || err);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("Email error:", message);
     return { success: false, error: "Failed to send message." };
   }
 }
