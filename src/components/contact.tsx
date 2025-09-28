@@ -109,16 +109,15 @@ export default function Contact() {
           </form>
 
           {/* Success / Error messages */}
-          {successMsg && (
+          {successMsg ? (
             <Reveal animation="animate-fade-in-up delay-600">
               <p className="mt-4 text-green-600 font-semibold text-center text-sm sm:text-xs">{successMsg}</p>
             </Reveal>
-          )}
-          {errorMsg && (
+          ) : errorMsg ? (
             <Reveal animation="animate-fade-in-up delay-600">
               <p className="mt-4 text-red-600 font-semibold text-center text-sm sm:text-xs">{errorMsg}</p>
             </Reveal>
-          )}
+          ) : null}
         </div>
       </Reveal>
     </section>
