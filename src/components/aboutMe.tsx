@@ -39,7 +39,7 @@ export default function AboutMe() {
               <>
                 <Reveal animation="animate-fade-in-right delay-300">
                   <p className="text-gray-200 mb-3">
-                    I started my IT journey back in 2022 after completing my intermediate in computer science at Punjab College. Alongside my bachelor &apos;s degree, I began exploring HTML and CSS, then gradually moved on to Java and modern frameworks.
+                    I started my IT journey back in 2022 after completing my intermediate in computer science at Punjab College. Alongside my bachelor &apos;s degree, I began exploring HTML and CSS, then gradually moved on to JavaScript and modern frameworks.
                   </p>
                 </Reveal>
 
