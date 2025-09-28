@@ -1,11 +1,37 @@
 "use client";
 
 import { sendContactEmail } from "@/app/actions/contact";
-import { useState } from "react";
 import Reveal from "@/libs/reveal";
+import { useState } from "react";
 
 export default function Contact() {
-  const [result, setResult] = useState<{ success: boolean; error: string } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+    setSuccessMsg("");
+    setErrorMsg("");
+
+    const formData = new FormData(e.currentTarget);
+
+    try {
+      const res = await sendContactEmail(formData);
+
+      if (res.success) {
+        setSuccessMsg("✅ Thank you! Your message has been sent.");
+        e.currentTarget.reset(); // Clear the form
+      } else {
+        setErrorMsg(`❌ ${res.error}`);
+      }
+    } catch (err) {
+      setErrorMsg("❌ Failed to send message.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <section className="relative py-12 flex items-center justify-center bg-gradient-to-t from-[#e5e7eb] to-[#9ca3af]">
@@ -19,27 +45,14 @@ export default function Contact() {
             </h1>
           </Reveal>
 
-          <Reveal animation="animate-fade-in-up delay-200">
-            <p className="text-center text-gray-600 mb-6 sm:mb-4 text-base sm:text-sm">
-              Got a question, idea, or opportunity? Send me a message!
-            </p>
-          </Reveal>
-
-          <form
-            id="contact-form"
-            className="space-y-4 sm:space-y-3"
-            action={async (formData: FormData) => {
-              const res = await sendContactEmail(formData);
-              setResult(res);
-              if (res.success) {
-                (document.getElementById("contact-form") as HTMLFormElement)?.reset();
-              }
-            }}
-          >
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-3">
             {/* Name */}
             <Reveal animation="animate-fade-in-up delay-300">
               <div>
-                <label htmlFor="name" className="block text-sm sm:text-xs font-medium mb-1 text-gray-700">
+                <label
+                  htmlFor="name"
+                  className="block text-sm sm:text-xs font-medium mb-1 text-gray-700"
+                >
                   Your Name
                 </label>
                 <input
@@ -55,7 +68,10 @@ export default function Contact() {
             {/* Email */}
             <Reveal animation="animate-fade-in-up delay-400">
               <div>
-                <label htmlFor="email" className="block text-sm sm:text-xs font-medium mb-1 text-gray-700">
+                <label
+                  htmlFor="email"
+                  className="block text-sm sm:text-xs font-medium mb-1 text-gray-700"
+                >
                   Your Email
                 </label>
                 <input
@@ -71,7 +87,10 @@ export default function Contact() {
             {/* Message */}
             <Reveal animation="animate-fade-in-up delay-500">
               <div>
-                <label htmlFor="message" className="block text-sm sm:text-xs font-medium mb-1 text-gray-700">
+                <label
+                  htmlFor="message"
+                  className="block text-sm sm:text-xs font-medium mb-1 text-gray-700"
+                >
                   Your Message
                 </label>
                 <textarea
@@ -84,29 +103,30 @@ export default function Contact() {
               </div>
             </Reveal>
 
-            {/* Submit */}
+            {/* Submit Button */}
             <Reveal animation="animate-fade-in-up delay-600">
               <button
                 type="submit"
-                className="w-full py-3 sm:py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition font-semibold text-white text-sm sm:text-xs"
+                disabled={loading}
+                className="w-full py-3 sm:py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition font-semibold text-white disabled:opacity-50 text-sm sm:text-xs"
               >
-                Send Message
+                {loading ? "Sending..." : "Send Message"}
               </button>
             </Reveal>
           </form>
 
           {/* Success / Error messages */}
-          {result?.success && (
+          {successMsg && (
             <Reveal animation="animate-fade-in-up delay-700">
               <p className="mt-4 text-green-600 font-semibold text-center text-sm sm:text-xs">
-                ✅ Thank you! Your message has been sent.
+                {successMsg}
               </p>
             </Reveal>
           )}
-          {result?.error && (
+          {errorMsg && (
             <Reveal animation="animate-fade-in-up delay-700">
               <p className="mt-4 text-red-600 font-semibold text-center text-sm sm:text-xs">
-                ❌ {result.error}
+                {errorMsg}
               </p>
             </Reveal>
           )}
