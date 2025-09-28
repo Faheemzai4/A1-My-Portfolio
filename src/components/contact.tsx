@@ -11,28 +11,31 @@ export default function Contact() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
-    // reset messages
+    setLoading(true);
     setSuccessMsg("");
     setErrorMsg("");
-    setLoading(true);
 
     const formData = new FormData(e.currentTarget);
 
     try {
       const res = await sendContactEmail(formData);
+
       if (res.success) {
         setSuccessMsg("✅ Thank you! Your message has been sent.");
-        e.currentTarget.reset();
+        setErrorMsg("");              // Make sure error is cleared
+        e.currentTarget.reset();      // Clear the form fields
       } else {
         setErrorMsg(`❌ ${res.error}`);
+        setSuccessMsg("");            // Make sure success is cleared
       }
     } catch {
       setErrorMsg("❌ Failed to send message.");
+      setSuccessMsg("");              // Make sure success is cleared
     } finally {
       setLoading(false);
     }
   }
+
 
   return (
     <section className="relative py-12 flex items-center justify-center bg-gradient-to-t from-[#e5e7eb] to-[#9ca3af]">
@@ -111,13 +114,18 @@ export default function Contact() {
           {/* Success / Error messages */}
           {successMsg ? (
             <Reveal animation="animate-fade-in-up delay-600">
-              <p className="mt-4 text-green-600 font-semibold text-center text-sm sm:text-xs">{successMsg}</p>
+              <p className="mt-4 text-green-600 font-semibold text-center text-sm sm:text-xs">
+                {successMsg}
+              </p>
             </Reveal>
           ) : errorMsg ? (
             <Reveal animation="animate-fade-in-up delay-600">
-              <p className="mt-4 text-red-600 font-semibold text-center text-sm sm:text-xs">{errorMsg}</p>
+              <p className="mt-4 text-red-600 font-semibold text-center text-sm sm:text-xs">
+                {errorMsg}
+              </p>
             </Reveal>
           ) : null}
+
         </div>
       </Reveal>
     </section>
