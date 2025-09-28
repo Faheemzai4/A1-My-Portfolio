@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 // Metadata (favicon + title)
 export const metadata: Metadata = {
   title: "Faheem Zai",
-  description: "Faheem Zai's Portfolio",
+  description: "Faheem Zai&apos;s Portfolio",
   icons: {
     icon: "/new.svg", // favicon in /public/logo/
   },

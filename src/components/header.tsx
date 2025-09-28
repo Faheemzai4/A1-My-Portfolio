@@ -28,6 +28,7 @@ const Logo = memo(() => (
     </span>
   </button>
 ));
+Logo.displayName = "Faheem"
 
 const menuItems = [
   { name: "Home", href: "home" },

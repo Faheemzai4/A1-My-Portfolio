@@ -1,4 +1,4 @@
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaGithub, FaPhoneAlt } from "react-icons/fa";
+import { FaFacebookF, FaLinkedinIn, FaGithub, FaPhoneAlt } from "react-icons/fa";
 import { HiOutlineMail } from "react-icons/hi";
 import Link from "next/link";
 

@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useTyping } from "@/hooks/useTyping";
 import Reveal from "@/libs/reveal";
 import { Orbitron } from "next/font/google";
@@ -48,14 +47,14 @@ export default function Dashboard() {
         {/* Text Section */}
         <Reveal animation="animate-fade-in-right">
           <section className="max-w-xl md:text-left md:pt-12">
-            <h1 className="text-4xl font-bold mb-4">Hi, I'm Faheem Khan</h1>
+            <h1 className="text-4xl font-bold mb-4">Hi, I&apos;m Faheem Khan</h1>
 
             <p className="text-lg text-gray-200 mb-4">
-              I'm a Frontend Developer specializing in React/Next.js and Angular. I create beautiful, responsive web applications with clean and maintainable code.
+              I&apos;m a Frontend Developer specializing in React/Next.js and Angular. I create beautiful, responsive web applications with clean and maintainable code.
             </p>
 
             <p className="text-lg text-gray-200 mb-4">
-              Explore my projects, check out my skills, and see what I've been working on recently.
+              Explore my projects, check out my skills, and see what I&apos;ve been working on recently.
             </p>
 
             {/* Buttons */}
