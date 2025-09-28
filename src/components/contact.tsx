@@ -3,13 +3,14 @@
 import { sendContactEmail } from "@/app/actions/contact";
 import { useState } from "react";
 import Reveal from "@/libs/reveal";
+import { FormEvent } from "react";
 
 export default function Contact() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPending(true);
     setError(null);
