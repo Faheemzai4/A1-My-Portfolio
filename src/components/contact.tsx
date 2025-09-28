@@ -1,29 +1,11 @@
 "use client";
 
 import { sendContactEmail } from "@/app/actions/contact";
-import Reveal from "@/libs/reveal";
 import { useState } from "react";
-import { FormEvent } from "react";
+import Reveal from "@/libs/reveal";
 
 export default function Contact() {
-  const [state, setState] = useState({ success: false, error: "" });
-  const [pending, setPending] = useState(false);
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setPending(true);
-
-    const formData = new FormData(e.currentTarget);
-
-    try {
-      const result = await sendContactEmail(formData);
-      setState(result);
-    } catch (err) {
-      setState({ success: false, error: "Failed to send message." });
-    } finally {
-      setPending(false);
-    }
-  };
+  const [result, setResult] = useState<{ success: boolean; error: string } | null>(null);
 
   return (
     <section className="relative py-12 flex items-center justify-center bg-gradient-to-t from-[#e5e7eb] to-[#9ca3af]">
@@ -43,7 +25,18 @@ export default function Contact() {
             </p>
           </Reveal>
 
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-3">
+          <form
+            id="contact-form"
+            className="space-y-4 sm:space-y-3"
+            action={async (formData: FormData) => {
+              const res = await sendContactEmail(formData);
+              setResult(res);
+              if (res.success) {
+                (document.getElementById("contact-form") as HTMLFormElement)?.reset();
+              }
+            }}
+          >
+            {/* Name */}
             <Reveal animation="animate-fade-in-up delay-300">
               <div>
                 <label htmlFor="name" className="block text-sm sm:text-xs font-medium mb-1 text-gray-700">
@@ -59,6 +52,7 @@ export default function Contact() {
               </div>
             </Reveal>
 
+            {/* Email */}
             <Reveal animation="animate-fade-in-up delay-400">
               <div>
                 <label htmlFor="email" className="block text-sm sm:text-xs font-medium mb-1 text-gray-700">
@@ -74,6 +68,7 @@ export default function Contact() {
               </div>
             </Reveal>
 
+            {/* Message */}
             <Reveal animation="animate-fade-in-up delay-500">
               <div>
                 <label htmlFor="message" className="block text-sm sm:text-xs font-medium mb-1 text-gray-700">
@@ -89,28 +84,29 @@ export default function Contact() {
               </div>
             </Reveal>
 
+            {/* Submit */}
             <Reveal animation="animate-fade-in-up delay-600">
               <button
                 type="submit"
-                disabled={pending}
-                className="w-full py-3 sm:py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition font-semibold text-white disabled:opacity-50 text-sm sm:text-xs"
+                className="w-full py-3 sm:py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition font-semibold text-white text-sm sm:text-xs"
               >
-                {pending ? "Sending..." : "Send Message"}
+                Send Message
               </button>
             </Reveal>
           </form>
 
-          {state.success && (
+          {/* Success / Error messages */}
+          {result?.success && (
             <Reveal animation="animate-fade-in-up delay-700">
               <p className="mt-4 text-green-600 font-semibold text-center text-sm sm:text-xs">
                 ✅ Thank you! Your message has been sent.
               </p>
             </Reveal>
           )}
-          {state.error && (
+          {result?.error && (
             <Reveal animation="animate-fade-in-up delay-700">
               <p className="mt-4 text-red-600 font-semibold text-center text-sm sm:text-xs">
-                ❌ {state.error}
+                ❌ {result.error}
               </p>
             </Reveal>
           )}

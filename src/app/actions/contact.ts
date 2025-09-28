@@ -14,7 +14,6 @@ export async function sendContactEmail(formData: FormData) {
       return { success: false, error: "All fields are required." };
     }
 
-    // Rate limit check (max 2 messages/day)
     const now = Date.now();
     const oneDay = 24 * 60 * 60 * 1000;
 
@@ -30,11 +29,8 @@ export async function sendContactEmail(formData: FormData) {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
-      secure: true,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
+      secure: Number(process.env.SMTP_PORT) === 465,
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
     });
 
     await transporter.sendMail({
@@ -46,8 +42,8 @@ export async function sendContactEmail(formData: FormData) {
     });
 
     return { success: true, error: "" };
-  } catch (err) {
-    console.error("❌ Email error:", err instanceof Error ? err.message : err);
+  } catch (err: any) {
+    console.error("Email error:", err?.message || err);
     return { success: false, error: "Failed to send message." };
   }
 }
