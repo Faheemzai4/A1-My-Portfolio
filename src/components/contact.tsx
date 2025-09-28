@@ -1,137 +1,42 @@
 "use client";
 
-import { sendContactEmail } from "@/app/actions/contact";
-import Reveal from "@/libs/reveal";
 import { useState } from "react";
+import { sendContactEmail } from "@/app/actions/contact";
 
 export default function Contact() {
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [successMsg, setSuccessMsg] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setSuccess(false);
+    setError("");
     setLoading(true);
-    setSuccessMsg("");
-    setErrorMsg("");
 
     const formData = new FormData(e.currentTarget);
+    const result = await sendContactEmail(formData);
 
-    try {
-      const res = await sendContactEmail(formData);
-
-      if (res.success) {
-        setSuccessMsg("✅ Thank you! Your message has been sent.");
-        e.currentTarget.reset(); // Clear the form
-      } else {
-        setErrorMsg(`❌ ${res.error}`);
-      }
-    } catch (err) {
-      setErrorMsg("❌ Failed to send message.");
-    } finally {
-      setLoading(false);
+    setLoading(false);
+    if (result.success) {
+      setSuccess(true);
+      e.currentTarget.reset(); // clear form
+    } else {
+      setError(result.error);
     }
   }
 
   return (
-    <section className="relative py-12 flex items-center justify-center bg-gradient-to-t from-[#e5e7eb] to-[#9ca3af]">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-stone-900 to-yellow-900" />
+    <form onSubmit={handleSubmit}>
+      <input name="name" placeholder="Your Name" required />
+      <input name="email" type="email" placeholder="Your Email" required />
+      <textarea name="message" placeholder="Your Message" required />
+      <button type="submit" disabled={loading}>
+        {loading ? "Sending..." : "Send Message"}
+      </button>
 
-      <Reveal animation="animate-fade-in-up">
-        <div className="w-full max-w-2xl sm:max-w-xl bg-white rounded-2xl shadow-xl p-8 sm:p-6">
-          <Reveal animation="animate-fade-in-up delay-100">
-            <h1 className="text-3xl sm:text-2xl font-bold text-center mb-6 text-gray-900">
-              Contact Me
-            </h1>
-          </Reveal>
-
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-3">
-            {/* Name */}
-            <Reveal animation="animate-fade-in-up delay-300">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm sm:text-xs font-medium mb-1 text-gray-700"
-                >
-                  Your Name
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  className="w-full rounded-lg p-3 sm:p-2 bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 text-sm sm:text-xs"
-                />
-              </div>
-            </Reveal>
-
-            {/* Email */}
-            <Reveal animation="animate-fade-in-up delay-400">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm sm:text-xs font-medium mb-1 text-gray-700"
-                >
-                  Your Email
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  className="w-full rounded-lg p-3 sm:p-2 bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 text-sm sm:text-xs"
-                />
-              </div>
-            </Reveal>
-
-            {/* Message */}
-            <Reveal animation="animate-fade-in-up delay-500">
-              <div>
-                <label
-                  htmlFor="message"
-                  className="block text-sm sm:text-xs font-medium mb-1 text-gray-700"
-                >
-                  Your Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={4}
-                  required
-                  className="w-full rounded-lg p-3 sm:p-2 bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 text-sm sm:text-xs"
-                />
-              </div>
-            </Reveal>
-
-            {/* Submit Button */}
-            <Reveal animation="animate-fade-in-up delay-600">
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3 sm:py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition font-semibold text-white disabled:opacity-50 text-sm sm:text-xs"
-              >
-                {loading ? "Sending..." : "Send Message"}
-              </button>
-            </Reveal>
-          </form>
-
-          {/* Success / Error messages */}
-          {successMsg && (
-            <Reveal animation="animate-fade-in-up delay-700">
-              <p className="mt-4 text-green-600 font-semibold text-center text-sm sm:text-xs">
-                {successMsg}
-              </p>
-            </Reveal>
-          )}
-          {errorMsg && (
-            <Reveal animation="animate-fade-in-up delay-700">
-              <p className="mt-4 text-red-600 font-semibold text-center text-sm sm:text-xs">
-                {errorMsg}
-              </p>
-            </Reveal>
-          )}
-        </div>
-      </Reveal>
-    </section>
+      {success && <p className="text-green-600">✅ Message sent!</p>}
+      {error && <p className="text-red-600">❌ {error}</p>}
+    </form>
   );
 }

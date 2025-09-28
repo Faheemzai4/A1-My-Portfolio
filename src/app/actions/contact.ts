@@ -1,3 +1,4 @@
+// src/app/actions/contact.ts
 "use server";
 
 import nodemailer from "nodemailer";
@@ -21,7 +22,8 @@ export async function sendContactEmail(formData: FormData) {
     const userData = emailLimitStore[email];
 
     if (now - userData.lastSent > oneDay) userData.count = 0;
-    if (userData.count >= 2) return { success: false, error: "You can only send 2 messages per day." };
+
+    if (userData.count >= 2) return { success: false, error: "You can only send 2 messages" };
 
     userData.count++;
     userData.lastSent = now;
@@ -29,8 +31,11 @@ export async function sendContactEmail(formData: FormData) {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
-      secure: Number(process.env.SMTP_PORT) === 465,
-      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
     });
 
     await transporter.sendMail({
@@ -42,9 +47,8 @@ export async function sendContactEmail(formData: FormData) {
     });
 
     return { success: true, error: "" };
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    console.error("Email error:", message);
+  } catch (err) {
+    console.error("Email error:", err instanceof Error ? err.message : err);
     return { success: false, error: "Failed to send message." };
   }
 }
